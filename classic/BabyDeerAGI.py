@@ -14,18 +14,39 @@ import json
 from serpapi import GoogleSearch
 from concurrent.futures import ThreadPoolExecutor
 import time
+import os
+import argparse
 
-### SET THESE 4 VARIABLES ##############################
+#Debug aid
+verbose = False
 
-# Add your API keys here
-OPENAI_API_KEY = ""
-SERPAPI_API_KEY = "" #[optional] web-search becomes available automatically when serpapi api key is provided
+parser = argparse.ArgumentParser()
+parser.add_argument("-o", "--objective", help="Objective for BabyAGI to achieve?", type=str)
+args = parser.parse_args()
 
 # Set variables
-OBJECTIVE = "Research recent AI news and write a poem about your findings in the style of shakespeare."
+if args.objective:
+    OBJECTIVE = str(args.objective)
+    print("The objective was passed in: "+str(OBJECTIVE))
+else:
+#    OBJECTIVE = "Keep it simple. What is the weather in Pasadena, CA today?"
+    OBJECTIVE = "What stock is likely to rise the most in the S&P500 in the next month. I have a high risk tolerance."
+#    OBJECTIVE = "Find me a room for rent at ASU starting August 1 for less than $1000 a month"
+#    OBJECTIVE = "Research Beyond Limits in Glendale CA and tell me all you can about their work and is it a good place to work and write a summary about your findings with context and a good explanation of the new topics."
+#    OBJECTIVE = "Research new LLM topics especially like BabyAGI and LangChain tell me about related projects and all that has happen in the last seven days can about their work and is it a good place to work and write a summary about your findings with context and a good explanation of the new topics."
+#    OBJECTIVE = "Research what are the best AI and Robotics companies in the los angeles area to work at in 2023 where I can make at least $1M year as CTO or VP of Engineer or VP of SW."
+
+### SET THESE 4 VARIABLES ##############################
+# Add your API keys here
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
+gpt_model = os.getenv("OPENAI_API_MODEL", "gpt-4-0613").lower()
 
 #turn on user input (change to "True" to turn on user input tool)
-user_input=False
+user_input=True
+#user_input=False
+
+data_path = "/home/ckruger/dev/data-p/BabyAGI/"
 
 ### UP TO HERE ##############################
 
@@ -41,7 +62,6 @@ if user_input == True:
   user_input_var = "[user-input]"
 else:
   user_input_var = ""
-
 
 # Initialize task list
 task_list = []
@@ -73,7 +93,7 @@ def text_completion_tool(prompt: str):
         {"role": "user", "content": prompt}
     ]
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=gpt_model,
         messages=messages,
         temperature=0.2,
         max_tokens=1500,
@@ -96,7 +116,9 @@ def web_search_tool(query: str , dependent_tasks_output : str):
       dependent_task = f"Use the dependent task output below as reference to help craft the correct search query for the provided task above. Dependent task output:{dependent_tasks_output}."
     else:
       dependent_task = "."
-    query = text_completion_tool("You are an AI assistant tasked with generating a Google search query based on the following task: "+query+". If the task looks like a search query, return the identical search query as your response. " + dependent_task + "\nSearch Query:")
+
+    query = text_completion_tool("You are an AI assistant tasked with generating a Google search query based on the following task: "+query+
+                                 ". If the task looks like a search query, return the identical search query as your response. " + dependent_task + "\nSearch Query:")
     print("\033[90m\033[3m"+"Search query: " +str(query)+"\033[0m")
     search_params = {
         "engine": "google",
@@ -105,6 +127,9 @@ def web_search_tool(query: str , dependent_tasks_output : str):
         "num":3 #edit this up or down for more results, though higher often results in OpenAI rate limits
     }
     search_results = GoogleSearch(search_params)
+    if verbose:
+        print("search result: " + str(search_results))
+    
     search_results = search_results.get_dict()
     try:
       search_results = search_results["organic_results"]
@@ -214,6 +239,8 @@ def execute_task(task, task_list, OBJECTIVE):
     global session_summary
     global task_id_counter
     # Check if dependent_task_ids is not empty
+    if verbose:
+        print("Task Executor: "+str(task["id"]))
     if task["dependent_task_ids"]:
       all_dependent_tasks_complete = True
       for dep_id in task["dependent_task_ids"]:
@@ -290,7 +317,7 @@ def task_creation_agent(objective: str) -> List[Dict]:
 
     print("\033[90m\033[3m" + "\nInitializing...\n" + "\033[0m")
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=gpt_model,
         messages=[
             {
                 "role": "system",
@@ -335,6 +362,8 @@ with ThreadPoolExecutor() as executor:
     while True:
         tasks_submitted = False
         for task in task_list:
+            if verbose:
+                print("deer: "+str(task["id"])+" "+task["status"])
             if task["status"] == "incomplete" and task_ready_to_run(task, task_list):
                 future = executor.submit(execute_task, task, task_list, OBJECTIVE)
                 task["status"] = "running"
@@ -347,8 +376,10 @@ with ThreadPoolExecutor() as executor:
 
 # Print session summary
 print("\033[96m\033[1m"+"\n*****SAVING FILE...*****\n"+"\033[0m\033[0m")
-file = open(f'output/output_{datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.txt', 'w')
+summary_file=data_path+"AGI-output-"+datetime.now().strftime("%y%d%m-%H%M")+".txt"
+file = open((summary_file), 'w')
+#file = open(f(data_path+'./ agi-output-{datetime.now().strftime("%y-%d-%m_%H_%M")}.txt'), 'w')
 file.write(session_summary)
 file.close()
-print("...file saved.")
+print(summary_file+"...file saved.")
 print("END")

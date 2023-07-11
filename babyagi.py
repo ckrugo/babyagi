@@ -25,7 +25,8 @@ client = chromadb.Client(Settings(anonymized_telemetry=False))
 # Engine configuration
 
 # Model: GPT, LLAMA, HUMAN, etc.
-LLM_MODEL = os.getenv("LLM_MODEL", os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")).lower()
+LLM_MODEL = os.getenv("LLM_MODEL", os.getenv("OPENAI_API_MODEL", "gpt-4-0613")).lower()
+#LLM_MODEL = os.getenv("LLM_MODEL", os.getenv("OPENAI_API_MODEL", "gpt-3.5-turbo")).lower()
 
 # API Keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -46,7 +47,7 @@ OBJECTIVE = os.getenv("OBJECTIVE", "")
 INITIAL_TASK = os.getenv("INITIAL_TASK", os.getenv("FIRST_TASK", ""))
 
 # Model configuration
-OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.0))
+OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.2))
 
 
 # Extensions support begin
@@ -144,7 +145,8 @@ if LLM_MODEL.startswith("llama"):
             + "\nLlama LLM requires package llama-cpp. Falling back to GPT-3.5-turbo."
             + "\033[0m\033[0m"
         )
-        LLM_MODEL = "gpt-3.5-turbo"
+        LLM_MODEL = "gpt-3.5-turbo-16k-0613"
+#        LLM_MODEL = "gpt-4-0613"
 
 if LLM_MODEL.startswith("gpt-4"):
     print(

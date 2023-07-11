@@ -19,7 +19,7 @@ PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "us-east1-gcp")
 assert PINECONE_ENVIRONMENT, "PINECONE_ENVIRONMENT environment variable is missing from .env"
 
 # Table config
-PINECONE_TABLE_NAME = os.getenv("TABLE_NAME", "")
+PINECONE_TABLE_NAME = os.getenv("PINECONE_TABLE_NAME", "")
 assert PINECONE_TABLE_NAME, "TABLE_NAME environment variable is missing from .env"
 
 # Function to query records from the Pinecone index
