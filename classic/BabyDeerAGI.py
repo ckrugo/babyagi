@@ -41,12 +41,12 @@ else:
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
 gpt_model = os.getenv("OPENAI_API_MODEL", "gpt-4-0613").lower()
+data_path = os.getenv("DATA_PATH_LOCAL","/home/ckrugo/dev/data-p/")
+data_path = data_path + "BabyAGI/"
 
 #turn on user input (change to "True" to turn on user input tool)
 user_input=True
 #user_input=False
-
-data_path = "/home/ckruger/dev/data-p/BabyAGI/"
 
 ### UP TO HERE ##############################
 
