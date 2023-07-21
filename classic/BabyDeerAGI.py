@@ -376,7 +376,7 @@ with ThreadPoolExecutor() as executor:
 
 # Print session summary
 print("\033[96m\033[1m"+"\n*****SAVING FILE...*****\n"+"\033[0m\033[0m")
-summary_file=data_path+"AGI-output-"+datetime.now().strftime("%y%d%m-%H%M")+".txt"
+summary_file=data_path+"AGI-output-"+datetime.now().strftime("%y%m%d-%H%M")+".txt"
 file = open((summary_file), 'w')
 #file = open(f(data_path+'./ agi-output-{datetime.now().strftime("%y-%d-%m_%H_%M")}.txt'), 'w')
 file.write(session_summary)
