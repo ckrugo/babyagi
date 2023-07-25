@@ -10,7 +10,10 @@ from skills.skill import Skill
 from skills.skill_registry import SkillRegistry
 from tasks.task_registry import TaskRegistry
 
-
+verbose = False  # helps with debugging
+objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
+skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
+output_file_path = '/home/ckruger/dev/data-p/BabyAGI'
 load_dotenv()  # Load environment variables from .env file
 
 # Retrieve all API keys
@@ -110,9 +113,10 @@ if __name__ == "__main__":
 
         # Print session summary
         print("\033[96m\033[1m"+"\n*****SAVING FILE...*****\n"+"\033[0m\033[0m")
-        file = open(f'output/output_{datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.txt', 'w')
+        output_file = output_file_path + "Elf-"+str(datetime.now().strftime("%Y%m%d-%H%M"))+".txt"
+        file = open(output_file, 'w')
         file.write(session_summary)
         file.close()
-        print("...file saved.")
+        print("...file saved."+output_file)
         print("END")
         executor.shutdown()
