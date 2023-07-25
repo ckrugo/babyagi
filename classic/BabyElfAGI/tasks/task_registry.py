@@ -4,12 +4,14 @@ import threading
 import os
 import numpy as np
 
+objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
+skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
+
 class TaskRegistry:
     def __init__(self):
         self.tasks = []
         # Initialize the lock
         self.lock = threading.Lock()
-        objectives_file_path = "tasks/example_objectives"
         self.example_loader = ExampleObjectivesLoader(objectives_file_path)
 
     def load_example_objectives(self, user_objective):
@@ -128,7 +130,8 @@ class TaskRegistry:
                 f"Dependent IDs must be smaller than the ID of the task."
                 f"New tasks IDs should be no larger than the last task ID."
                 f"Always select at least one skill."
-                f"Task IDs should be unique and in chronological order."                f"Do not change the status of complete tasks."
+                f"Task IDs should be unique and in chronological order."                
+                f"Do not change the status of complete tasks."
                 f"Only add skills from the AVAILABLE SKILLS, using the exact same spelling."
                 f"Provide your array as a JSON array with double quotes. The first object is new tasks to add as a JSON array, the second array lists the ID numbers where the new tasks should be added after (number of ID numbers matches array), and the third object provides the tasks that need to be updated."
                 f"Make sure to keep dependent_task_ids key, even if an empty array."
@@ -215,7 +218,7 @@ class TaskRegistry:
                 dependent_task = f"\033[31m<dependencies: {', '.join([f'#{dep_id}' for dep_id in dependent_task_ids])}>\033[0m"
             status_color = "\033[32m" if t.get('status') == "completed" else "\033[31m"
             p_tasklist+= f"\033[1m{t.get('id')}\033[0m: {t.get('task')} {status_color}[{t.get('status')}]\033[0m \033[93m[{t.get('skill')}] {dependent_task}\033[0m\n"
-        print(p_tasklist)
+        print(" task_registry: "+p_tasklist)
 
 
 
@@ -226,6 +229,8 @@ class ExampleObjectivesLoader:
 
     def load_objectives_examples(self):
         self.objectives_examples = []
+        print("task_registry: "+str(os.listdir(objectives_file_path))) # for debugging
+
         for filename in os.listdir(self.objectives_folder_path):
             file_path = os.path.join(self.objectives_folder_path, filename)
             with open(file_path, 'r') as file:

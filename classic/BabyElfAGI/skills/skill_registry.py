@@ -3,10 +3,16 @@ import importlib.util
 import inspect
 from .skill import Skill
 
+objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
+skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
+
 class SkillRegistry:
     def __init__(self, api_keys, skill_names=None):
         self.skills = {}
-        skill_files = [f for f in os.listdir('skills') if f.endswith('.py') and f != 'skill.py']
+
+        print("SkillRegistry: "+str(os.listdir(skills_file_path))) # for debugging
+
+        skill_files = [f for f in os.listdir(skills_file_path) if f.endswith('.py') and f != 'skill.py']
         for skill_file in skill_files:
             module_name = skill_file[:-3]
             if skill_names and module_name not in skill_names:
@@ -20,7 +26,7 @@ class SkillRegistry:
                         self.skills[skill.name] = skill
         # Print the names and descriptions of all loaded skills
         skill_info = "\n".join([f"{skill_name}: {skill.description}" for skill_name, skill in self.skills.items()])
-        # print(skill_info)
+        # print("SkillRegistry: "+skill_info)
 
     def load_all_skills(self):
         skills_dir = os.path.dirname(__file__)

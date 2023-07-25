@@ -14,7 +14,8 @@ class ObjectiveSaver(Skill):
         if not self.valid:
             return
         #print(dependent_task_outputs[2])
-        code =  dependent_task_outputs[2]
+        code =  dependent_task_outputs[0]
+#        code =  dependent_task_outputs[2]
         task_prompt = f"Come up with a file name (eg. 'research_shoes.json') for the following objective:{code}\n###\nFILE_NAME:"
       
         messages = [
