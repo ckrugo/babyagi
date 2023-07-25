@@ -13,9 +13,14 @@ class ObjectiveSaver(Skill):
     def execute(self, params, dependent_task_outputs, objective):
         if not self.valid:
             return
-        #print(dependent_task_outputs[2])
-        code =  dependent_task_outputs[0]
-#        code =  dependent_task_outputs[2]
+        
+        if len(dependent_task_outputs) < 2:
+            print("Object Saver: No proper dependent task outputs with code available.")
+            return
+        # TODO: seems broken, the dependent task is missing dependency #2 which should have the code in it.
+        
+        print(dependent_task_outputs[2])
+        code =  dependent_task_outputs[2]
         task_prompt = f"Come up with a file name (eg. 'research_shoes.json') for the following objective:{code}\n###\nFILE_NAME:"
       
         messages = [

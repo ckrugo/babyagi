@@ -14,6 +14,7 @@ verbose = False  # helps with debugging
 objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
 skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
 output_file_path = '/home/ckruger/dev/data-p/BabyAGI'
+
 load_dotenv()  # Load environment variables from .env file
 
 # Retrieve all API keys
@@ -24,8 +25,9 @@ api_keys = {
 }
 
 # Set OBJECTIVE
-OBJECTIVE = "Create an example objective and tasklist for 'write a poem', which only uses text_completion in the tasks. Do this by usign code_reader to read example1.json, then writing the JSON objective tasklist pair using text_completion, and saving it using objective_saver."
-LOAD_SKILLS = ['text_completion','code_reader','objective_saver']
+OBJECTIVE = "Create an example objective and tasklist for 'get the weather', which uses web_search, text_completion in the tasks. Do this by usign code_reader to read example2.json, then writing the JSON objective tasklist pair using text_completion, and saving it using objective_saver."
+#OBJECTIVE = "Create an example objective and tasklist for 'write a poem', which only uses text_completion in the tasks. Do this by usign code_reader to read example1.json, then writing the JSON objective tasklist pair using text_completion, and saving it using objective_saver."
+LOAD_SKILLS = ['text_completion','code_reader','objective_saver', 'web_search']
 REFLECTION = False
 
 ##### START MAIN LOOP########
@@ -113,7 +115,7 @@ if __name__ == "__main__":
 
         # Print session summary
         print("\033[96m\033[1m"+"\n*****SAVING FILE...*****\n"+"\033[0m\033[0m")
-        output_file = output_file_path + "Elf-"+str(datetime.now().strftime("%Y%m%d-%H%M"))+".txt"
+        output_file = output_file_path + "/Elf-"+str(datetime.now().strftime("%y%m%d-%H%M"))+".txt"
         file = open(output_file, 'w')
         file.write(session_summary)
         file.close()
