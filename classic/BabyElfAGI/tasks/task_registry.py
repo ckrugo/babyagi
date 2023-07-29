@@ -4,6 +4,7 @@ import threading
 import os
 import numpy as np
 
+verbose=False
 objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
 skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
 
@@ -218,7 +219,8 @@ class TaskRegistry:
                 dependent_task = f"\033[31m<dependencies: {', '.join([f'#{dep_id}' for dep_id in dependent_task_ids])}>\033[0m"
             status_color = "\033[32m" if t.get('status') == "completed" else "\033[31m"
             p_tasklist+= f"\033[1m{t.get('id')}\033[0m: {t.get('task')} {status_color}[{t.get('status')}]\033[0m \033[93m[{t.get('skill')}] {dependent_task}\033[0m\n"
-        print(" task_registry: "+p_tasklist)
+        if verbose:
+            print(" task_registry: "+p_tasklist)
 
 
 
@@ -229,7 +231,8 @@ class ExampleObjectivesLoader:
 
     def load_objectives_examples(self):
         self.objectives_examples = []
-        print("task_registry: "+str(os.listdir(objectives_file_path))) # for debugging
+        if verbose:
+            print("task_registry:: "+str(os.listdir(objectives_file_path))) # for debugging
 
         for filename in os.listdir(self.objectives_folder_path):
             file_path = os.path.join(self.objectives_folder_path, filename)

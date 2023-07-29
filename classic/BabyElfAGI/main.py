@@ -25,7 +25,8 @@ api_keys = {
 }
 
 # Set OBJECTIVE
-OBJECTIVE = "Create an example objective and tasklist for 'get the weather', which uses web_search, text_completion in the tasks. Do this by usign code_reader to read example2.json, then writing the JSON objective tasklist pair using text_completion, and saving it using objective_saver."
+OBJECTIVE = "Tell me the best day for BBQ in Pasadena, ca in the next 7 days."
+#OBJECTIVE = "Create a new simple skill to find and save the weather in pasadena, ca, and save the skill."
 #OBJECTIVE = "Create an example objective and tasklist for 'write a poem', which only uses text_completion in the tasks. Do this by usign code_reader to read example1.json, then writing the JSON objective tasklist pair using text_completion, and saving it using objective_saver."
 LOAD_SKILLS = ['text_completion','code_reader','objective_saver', 'web_search']
 REFLECTION = False
@@ -37,7 +38,7 @@ print("\033[96m\033[1m"+"\n*****OBJECTIVE*****\n"+"\033[0m\033[0m")
 print(OBJECTIVE)
 
 if __name__ == "__main__":
-    session_summary = ""
+    session_summary = OBJECTIVE+"\n\n"
   
     # Initialize the SkillRegistry and TaskRegistry
     skill_registry = SkillRegistry(api_keys=api_keys, skill_names=LOAD_SKILLS)
@@ -58,7 +59,8 @@ if __name__ == "__main__":
             # Get the tasks that are ready to be executed (i.e., all their dependencies have been completed)
             tasks = task_registry.get_tasks()
             # Print the updated task list
-            task_registry.print_tasklist(tasks) 
+            if verbose:
+                task_registry.print_tasklist(tasks) 
             
             # Update task_outputs to include new tasks
             for task in tasks:
@@ -71,7 +73,7 @@ if __name__ == "__main__":
                for dep in task.get('dependent_task_ids', [])) 
                and not task_outputs[task["id"]]["completed"]]
 
-            session_summary += str(task)+"\n"
+            #session_summary += str(task)+" TASK \n"
             futures = [executor.submit(task_registry.execute_task, task_id, task, skill_registry, task_outputs, OBJECTIVE) 
                        for task_id, task in ready_tasks if not task_outputs[task_id]["completed"]]
             
@@ -89,7 +91,7 @@ if __name__ == "__main__":
 
                 # Reflect on the output
                 if output:
-                    session_summary += str(output)+"\n"
+                    session_summary += str(output)+" \n"
 
                   
                     if REFLECTION == True:
@@ -102,8 +104,6 @@ if __name__ == "__main__":
                       for task_to_update in tasks_to_update:
                         task_registry.update_tasks(task_to_update)
                     
-
-
             #print(task_outputs.values())
             if all(task["status"] == "completed" for task in task_registry.tasks):
               print("All tasks completed!")
@@ -119,6 +119,6 @@ if __name__ == "__main__":
         file = open(output_file, 'w')
         file.write(session_summary)
         file.close()
-        print("...file saved."+output_file)
+        print("...file saved. \n "+output_file)
         print("END")
         executor.shutdown()

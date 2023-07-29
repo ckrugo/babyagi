@@ -2,6 +2,11 @@ from skills.skill import Skill
 import openai
 import os
 
+verbose = False  # helps with debugging
+objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
+skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
+output_file_path = '/home/ckruger/dev/data-p/BabyAGI'
+
 class CodeReader(Skill):
     name = 'code_reader'
     description = "A skill that finds a file's location in it's own program's directory and returns its contents."
@@ -36,6 +41,7 @@ class CodeReader(Skill):
             presence_penalty=0
         )
         file_path = response.choices[0].message['content'].strip()
+        file_path = "/home/ckruger/dev/babyagi/classic/BabyElfAGI/"+file_path
         print(f"AI suggested file path: {file_path}")
 
         try:
@@ -71,8 +77,10 @@ class CodeReader(Skill):
         relative_path = ""
         while True:
             new_path = os.path.dirname(current_path)
-            if new_path == '/home/runner/BabyElfAGI/skills':  # reached the top
-                return '/home/runner/BabyElfAGI'
+#            if new_path == '/home/runner/BabyElfAGI/skills':  # reached the top
+            if new_path == skills_file_path:  # reached the top
+#                return '/home/runner/BabyElfAGI'
+                return new_path
             current_path = new_path
             relative_path = os.path.join("..", relative_path)
 

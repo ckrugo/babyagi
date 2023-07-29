@@ -3,14 +3,15 @@ import importlib.util
 import inspect
 from .skill import Skill
 
+verbose=False
 objectives_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/tasks/example_objectives'
 skills_file_path = '/home/ckruger/dev/babyagi/classic/BabyElfAGI/skills'
 
 class SkillRegistry:
     def __init__(self, api_keys, skill_names=None):
         self.skills = {}
-
-        print("SkillRegistry: "+str(os.listdir(skills_file_path))) # for debugging
+        if verbose:
+            print("SkillRegistry: "+str(os.listdir(skills_file_path))) # for debugging
 
         skill_files = [f for f in os.listdir(skills_file_path) if f.endswith('.py') and f != 'skill.py']
         for skill_file in skill_files:

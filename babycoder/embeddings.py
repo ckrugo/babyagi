@@ -7,6 +7,10 @@ import numpy as np
 from transformers import GPT2TokenizerFast
 from dotenv import load_dotenv
 import time
+from typing import List
+from typing import Dict
+from typing import Tuple
+
 
 # Heavily derived from OpenAi's cookbook example
 
@@ -133,20 +137,24 @@ class Embeddings:
 
         return selected_chunks
 
-    def get_embedding(self, text: str, model: str) -> list[float]:
+    def get_embedding(self, text: str, model: str) -> List[float]:
         result = openai.Embedding.create(
+#    def get_embedding(self, text: str, model: str) -> list[float]:
+#        result = openai.Embedding.create(
         model=model,
         input=text
         )
         return result["data"][0]["embedding"]
 
-    def get_doc_embedding(self, text: str) -> list[float]:
+    def get_doc_embedding(self, text: str) -> List[float]:
+#    def get_doc_embedding(self, text: str) -> list[float]:
         return self.get_embedding(text, self.DOC_EMBEDDINGS_MODEL)
 
-    def get_query_embedding(self, text: str) -> list[float]:
+    def get_query_embedding(self, text: str) -> List[float]:
+#    def get_query_embedding(self, text: str) -> list[float]:
         return self.get_embedding(text, self.QUERY_EMBEDDINGS_MODEL)
 
-    def compute_doc_embeddings(self, df: pd.DataFrame) -> dict[tuple[str, str], list[float]]:
+    def compute_doc_embeddings(self, df: pd.DataFrame) -> Dict[Tuple[str, str], List[float]]:
         """
         Create an embedding for each row in the dataframe using the OpenAI Embeddings API.
 
