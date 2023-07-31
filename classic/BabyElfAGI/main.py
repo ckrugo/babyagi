@@ -25,7 +25,8 @@ api_keys = {
 }
 
 # Set OBJECTIVE
-OBJECTIVE = "Tell me the best day for BBQ in Pasadena, ca in the next 7 days."
+OBJECTIVE = "Find me a life insurance policy for 10 years at a 1 million dollar payout for a white male age 54. I'm looking for the lowest annual rate."
+#OBJECTIVE = "Tell me the best day for BBQ in Pasadena, ca in the next 7 days."
 #OBJECTIVE = "Create a new simple skill to find and save the weather in pasadena, ca, and save the skill."
 #OBJECTIVE = "Create an example objective and tasklist for 'write a poem', which only uses text_completion in the tasks. Do this by usign code_reader to read example1.json, then writing the JSON objective tasklist pair using text_completion, and saving it using objective_saver."
 LOAD_SKILLS = ['text_completion','code_reader','objective_saver', 'web_search']
