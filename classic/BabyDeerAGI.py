@@ -1,9 +1,10 @@
 ###### This is a modified version of OG BabyAGI, called BabyDeerAGI (modifications will follow the pattern "Baby<animal>AGI").######
 ######IMPORTANT NOTE: I'm sharing this as a framework to build on top of (with lots of room for improvement), to facilitate discussion around how to improve these. This is NOT for people who are looking for a complete solution that's ready to use. ######
 
-import openai
+import os
 import time
 from datetime import datetime
+import openai
 import requests
 from bs4 import BeautifulSoup
 from collections import deque
@@ -43,7 +44,7 @@ SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
 gpt_model = "gpt-4-0613"
 #gpt_model = os.getenv("OPENAI_API_MODEL", "gpt-4-0613").lower()
 data_path = os.getenv("DATA_PATH_LOCAL","/home/ckrugo/dev/data-p/")
-data_path = data_path + "BabyAGI/"
+#data_path = data_path + "BabyAGI\"
 
 #turn on user input (change to "True" to turn on user input tool)
 user_input=True
@@ -204,8 +205,6 @@ def extract_text(content: str):
     text = soup.get_text(strip=True)
     return text
 
-
-
 def extract_relevant_info(objective, large_string, task):
     chunk_size = 3000
     overlap = 500
@@ -233,7 +232,6 @@ def extract_relevant_info(objective, large_string, task):
     return notes
 
 ### Agent functions ##############################
-
 
 def execute_task(task, task_list, OBJECTIVE):
     
@@ -293,7 +291,6 @@ def execute_task(task, task_list, OBJECTIVE):
 
 def task_ready_to_run(task, task_list):
     return all([get_task_by_id(dep_id)["status"] == "complete" for dep_id in task["dependent_task_ids"]])
-
 
 task_list = []
 
@@ -377,9 +374,9 @@ with ThreadPoolExecutor() as executor:
 
 # Print session summary
 print("\033[96m\033[1m"+"\n*****SAVING FILE...*****\n"+"\033[0m\033[0m")
-summary_file=data_path+"AGI-output-"+datetime.now().strftime("%y%m%d-%H%M")+".txt"
-file = open((summary_file), 'w')
-#file = open(f(data_path+'./ agi-output-{datetime.now().strftime("%y-%m-%d_%H_%M")}.txt'), 'w')
+output_file = DATA_PATH + "Baby/baby-" + datetime.now().strftime("%y%m%d-%H%M") + ".txt"
+file = open(output_file, 'w')
+#file = open(f'output/output_{datetime.now().strftime("%d_%m_%Y_%H_%M_%S")}.txt', 'w')
 file.write(session_summary)
 file.close()
 print(summary_file+"...file saved.")
